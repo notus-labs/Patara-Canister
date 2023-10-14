@@ -3,19 +3,6 @@
     "patara_canister_backend": {
       "main": "src/patara_canister_backend/main.mo",
       "type": "motoko"
-    },
-    "patara_canister_frontend": {
-      "dependencies": [
-        "patara_canister_backend"
-      ],
-      "frontend": {
-        "entrypoint": "src/patara_canister_frontend/src/index.html"
-      },
-      "source": [
-        "src/patara_canister_frontend/assets",
-        "dist/patara_canister_frontend/"
-      ],
-      "type": "assets"
     }
   },
   "defaults": {
