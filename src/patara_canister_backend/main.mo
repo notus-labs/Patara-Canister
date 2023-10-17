@@ -15,9 +15,9 @@ shared(messager) actor class PasswordManager() {
         wallet_receive() : async ();
   };
   
-  let vault = HashMap.HashMap<Blob, [Nat8]>(0, Blob.equal, Blob.hash);
+  var vault = HashMap.HashMap<Blob, [Nat8]>(0, Blob.equal, Blob.hash);
   let owner = messager.caller;
-  stable var nextPaymentDate: Int = Time.now() + 30 * 24 * 60 * 60 * 1000; // Add 30 days
+  var nextPaymentDate: Int = Time.now() + (30 * 24 * 60 * 60 * 1_000_000);
   let minPaymentAmount: Int = 10_000_000; // 10M cycles
   let remoteWallet : CycleWalletActor = actor(Principal.toText(messager.caller)); // Change this to the patara treasury
 
@@ -25,7 +25,8 @@ shared(messager) actor class PasswordManager() {
     amount: Nat
   ): async { refunded: Nat} {
     assert(amount >= minPaymentAmount);
-    nextPaymentDate := Time.now() + 30 * 24 * 60 * 60 * 1000; // Add 30 days
+    assert(owner == msg.caller);
+    nextPaymentDate := Time.now() + 30 * 24 * 60 * 60 * 1_000_000;
 
     // Send the money to the patara treasury
     Cycles.add(amount);
@@ -40,6 +41,7 @@ shared(messager) actor class PasswordManager() {
     amount: Nat
   ): async { refunded: Nat} {
     assert(nextPaymentDate > Time.now());
+    assert(owner == msg.caller);
 
     Cycles.add(amount);
     let result = await remoteWallet.wallet_receive();
